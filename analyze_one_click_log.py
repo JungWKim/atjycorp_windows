@@ -6,7 +6,7 @@ import re
 import ipaddress
 
 # 사용자가 변경해야할 값들
-folder = Path(r"C:\Users\lionm\Downloads\LogCollectResult\20251124130628\device_logs")
+folder = Path(r"C:\Users\lionm\Downloads\20250415_납품_SC_100_김정우-20251209T153450Z-1-001\20250415_납품_SC_100_김정우\2차 원클릭 로그\LogCollectResult")
 output_file = Path(r"C:\Users\lionm\Downloads\output_one_click_log.xlsx")
 
 bios_config_dict_1258h_v7 = {
@@ -626,7 +626,6 @@ def main():
                                     raid_card1_capacity = "raid card1 info2 not found in server_config.txt" 
 
                                 # RAID Card1 Disk 정보 추출
-                                raid_card1_info2 = raid_card1_info2_regex.group(1)
                                 raid_card1_disk_info_regex = re.search(r"(Physical Drives Information.*)", raid_card1_info2, re.DOTALL)
                                 if raid_card1_info2_regex and raid_card1_disk_info_regex:
                                     raid_card1_disk_info = raid_card1_disk_info_regex.group(1)
@@ -680,7 +679,6 @@ def main():
                                     raid_card2_jbod = "raid card2 info2 not found in server_config.txt"
 
                                 # RAID Card2 Disk 정보 추출
-                                raid_card2_info2 = raid_card2_info2_regex.group(1)
                                 raid_card2_disk_info_regex = re.search(r"(Physical Drives Information.*)", raid_card2_info2, re.DOTALL)
                                 if raid_card2_info2_regex and raid_card2_disk_info_regex:
                                     raid_card2_disk_info = raid_card2_disk_info_regex.group(1)
@@ -812,7 +810,7 @@ def main():
                                     ocp1_info1 = [line for line in ocp_info1.splitlines() if line.lstrip().startswith("1")]
                                     ocp2_info1 = [line for line in ocp_info1.splitlines() if line.lstrip().startswith("2")]
                                     ocp1_sn = ocp1_info1[0].split("|")[-2].strip() if ocp1_info1 else "not found in server_config.txt"
-                                    ocp2_sn = ocp2_info1[0].split("|")[-2].strip() if ocp1_info1 else "not found in server_config.txt"
+                                    ocp2_sn = ocp2_info1[0].split("|")[-2].strip() if ocp2_info1 else "not found in server_config.txt"
                                 else:
                                     ocp1_sn = "ocp info1 not found in server_config.txt"
                                     ocp2_sn = "ocp info1 not found in server_config.txt"
@@ -830,23 +828,33 @@ def main():
                                 if utc_match_list:
                                     ocp_info2 = netcard_info_content[utc_match_list[-1].start():]
 
-                                    idx = next(i for i, match in enumerate(ocp_info2.splitlines()) if "SlotId          :1" in match)
-                                    ocp1_info2 = "\n".join(ocp_info2.splitlines()[idx-3:idx+6])
-                                    ocp1_model_regex = re.search(r'ProductName\s*:([^\n\r]+)', ocp1_info2)
-                                    ocp1_model = ocp1_model_regex.group(1).lstrip() if ocp1_model_regex else "not found in netcard_info.txt"
-                                    ocp1_mac_regex = re.search(r'MacAddr\s*:([^\n\r]+)', ocp1_info2)
-                                    ocp1_mac = ocp1_mac_regex.group(1).lstrip() if ocp1_mac_regex else "not found in netcard_info.txt"
-                                    ocp1_fw_regex = re.search(r'FirmwareVersion\s*:([^\n\r]+)', ocp1_info2)
-                                    ocp1_fw = ocp1_fw_regex.group(1).lstrip() if ocp1_fw_regex else "not found in netcard_info.txt"
+                                    idx = next((i for i, match in enumerate(ocp_info2.splitlines()) if "SlotId          :1" in match), None)
+                                    if idx is not None:
+                                        ocp1_info2 = "\n".join(ocp_info2.splitlines()[idx-3:idx+6])
+                                        ocp1_model_regex = re.search(r'ProductName\s*:([^\n\r]+)', ocp1_info2)
+                                        ocp1_model = ocp1_model_regex.group(1).lstrip() if ocp1_model_regex else "not found in netcard_info.txt"
+                                        ocp1_mac_regex = re.search(r'MacAddr\s*:([^\n\r]+)', ocp1_info2)
+                                        ocp1_mac = ocp1_mac_regex.group(1).lstrip() if ocp1_mac_regex else "not found in netcard_info.txt"
+                                        ocp1_fw_regex = re.search(r'FirmwareVersion\s*:([^\n\r]+)', ocp1_info2)
+                                        ocp1_fw = ocp1_fw_regex.group(1).lstrip() if ocp1_fw_regex else "not found in netcard_info.txt"
+                                    else:
+                                        ocp1_model = "OCP1 not found in netcard_info.txt"
+                                        ocp1_mac = "OCP1 not found in netcard_info.txt"
+                                        ocp1_fw = "OCP1 not found in netcard_info.txt"
 
-                                    idx = next(i for i, match in enumerate(ocp_info2.splitlines()) if "SlotId          :2" in match)
-                                    ocp2_info2 = "\n".join(ocp_info2.splitlines()[idx-3:idx+6])
-                                    ocp2_model_regex = re.search(r'ProductName\s*:([^\n\r]+)', ocp2_info2)
-                                    ocp2_model = ocp2_model_regex.group(1).lstrip() if ocp2_model_regex else "not found in netcard_info.txt"
-                                    ocp2_mac_regex = re.search(r'MacAddr\s*:([^\n\r]+)', ocp2_info2)
-                                    ocp2_mac = ocp2_mac_regex.group(1).lstrip() if ocp2_mac_regex else "not found in netcard_info.txt"
-                                    ocp2_fw_regex = re.search(r'FirmwareVersion\s*:([^\n\r]+)', ocp2_info2)
-                                    ocp2_fw = ocp2_fw_regex.group(1).lstrip() if ocp2_fw_regex else "not found in netcard_info.txt"
+                                    idx = next((i for i, match in enumerate(ocp_info2.splitlines()) if "SlotId          :2" in match), None)
+                                    if idx is not None:
+                                        ocp2_info2 = "\n".join(ocp_info2.splitlines()[idx-3:idx+6])
+                                        ocp2_model_regex = re.search(r'ProductName\s*:([^\n\r]+)', ocp2_info2)
+                                        ocp2_model = ocp2_model_regex.group(1).lstrip() if ocp2_model_regex else "not found in netcard_info.txt"
+                                        ocp2_mac_regex = re.search(r'MacAddr\s*:([^\n\r]+)', ocp2_info2)
+                                        ocp2_mac = ocp2_mac_regex.group(1).lstrip() if ocp2_mac_regex else "not found in netcard_info.txt"
+                                        ocp2_fw_regex = re.search(r'FirmwareVersion\s*:([^\n\r]+)', ocp2_info2)
+                                        ocp2_fw = ocp2_fw_regex.group(1).lstrip() if ocp2_fw_regex else "not found in netcard_info.txt"
+                                    else:
+                                        ocp2_model = "OCP2 not found in netcard_info.txt"
+                                        ocp2_mac = "OCP2 not found in netcard_info.txt"
+                                        ocp2_fw = "OCP2 not found in netcard_info.txt"
                                 else:
                                     ocp1_model = "not found in netcard_info.txt"
                                     ocp1_mac = "not found in netcard_info.txt"
@@ -928,7 +936,7 @@ def main():
                                     else:
                                         bios_mismatch_list.append(key)
                                         bios_mismatch_count += 1
-                                bios_configuration_status = True if bios_mismatch_count == 0 else False
+                                bios_configuration_status = "True" if bios_mismatch_count == 0 else "False"
                                 bios_ocp1_regex = re.search(rf'"PciePortEnable1"\s*:\s*"([^"]+)"', bios_currentvalue_json_content)
                                 bios_ocp1_status = bios_ocp1_regex.group(1) if bios_ocp1_regex else "not found in currentvalue.json"
                                 bios_disable_boot_drive_status_regex = re.search(rf'"PciePortEnable9"\s*:\s*"([^"]+)"', bios_currentvalue_json_content)
