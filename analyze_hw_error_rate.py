@@ -32,5 +32,9 @@ def main():
     total_count = df_5288V7_count + df_2288HV7_count + df_1288HV7_count + df_1288VH7_LFF_count
     print("Total Count:", total_count)
 
+    print(df_2288HV7)
+    print(df_2288HV7['Category'].unique())
+
+
 if __name__ == "__main__":
     main()
