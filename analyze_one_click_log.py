@@ -6,7 +6,7 @@ import re
 import ipaddress
 
 # 사용자가 변경해야할 값들
-folder = Path(r"C:\Users\lionm\Downloads\20250415_납품_SC_100_김정우-20251209T153450Z-1-001\20250415_납품_SC_100_김정우\2차 원클릭 로그\LogCollectResult")
+folder = Path(r"C:\Users\lionm\Downloads\20250529_납품_1258H_V7_6대_김정우-20251209T153452Z-1-001\20250529_납품_1258H_V7_6대_김정우\2차 원클릭 로그\LogCollectResult\20250519201100\device_logs")
 output_file = Path(r"C:\Users\lionm\Downloads\output_one_click_log.xlsx")
 
 bios_config_dict_1258h_v7 = {
@@ -604,6 +604,7 @@ def main():
                                     raid_card1_model = "raid card1 info1 not found in server_config.txt"
                                     raid_card1_vendor = "raid card1 info1 not found in server_config.txt"
 
+                                raid_card1_info2 = None
                                 raid_card1_info2_regex = re.search(r"(RAID Controller #0 Information.*)(?=\n\s*\nRAID Controller #1 Information)", server_config_txt_content, re.DOTALL)
                                 if raid_card1_info2_regex:
                                     raid_card1_info2 = raid_card1_info2_regex.group(1)
@@ -626,22 +627,31 @@ def main():
                                     raid_card1_capacity = "raid card1 info2 not found in server_config.txt" 
 
                                 # RAID Card1 Disk 정보 추출
-                                raid_card1_disk_info_regex = re.search(r"(Physical Drives Information.*)", raid_card1_info2, re.DOTALL)
-                                if raid_card1_info2_regex and raid_card1_disk_info_regex:
-                                    raid_card1_disk_info = raid_card1_disk_info_regex.group(1)
-                                    raid_card1_disk_sn_list = re.findall(r"Serial Number\s*:\s*[^\n\r]+", raid_card1_disk_info)
-                                    raid_card1_disk_sn = [line.split(":")[1].lstrip().rstrip() for line in raid_card1_disk_sn_list]
-                                    raid_card1_disk_vendor_list = re.findall(r"Manufacturer\s*:\s*[^\n\r]+", raid_card1_disk_info)
-                                    raid_card1_disk_vendor = [line.split(":")[1].lstrip().rstrip() for line in raid_card1_disk_vendor_list]
-                                    raid_card1_disk_model_list = re.findall(r"Model\s*:\s*[^\n\r]+", raid_card1_disk_info)
-                                    raid_card1_disk_model = [line.split()[-1].lstrip().rstrip() for line in raid_card1_disk_model_list]
-                                    raid_card1_disk_interface_list = re.findall(r"Interface Type\s*:\s*[^\n\r]+", raid_card1_disk_info)
-                                    raid_card1_disk_interface = [line.split(":")[1].lstrip().rstrip() for line in raid_card1_disk_interface_list]
-                                    raid_card1_disk_capacity_list = re.findall(r"Capacity\s*:\s*[^\n\r]+", raid_card1_disk_info)
-                                    raid_card1_disk_capacity = [line.split(":")[1].lstrip().rstrip() for line in raid_card1_disk_capacity_list]
-                                    raid_card1_disk_fw_list = re.findall(r"Firmware Version\s*:\s*[^\n\r]+", raid_card1_disk_info)
-                                    raid_card1_disk_fw = [line.split(":")[1].lstrip().rstrip() for line in raid_card1_disk_fw_list]
-                                    raid_card1_disk_count = len(re.findall(r"^ID\s*:\s*[^\n\r]+", raid_card1_disk_info, re.MULTILINE))
+                                if raid_card1_info2:
+                                    raid_card1_disk_info_regex = re.search(r"(Physical Drives Information.*)", raid_card1_info2, re.DOTALL)
+                                    if raid_card1_info2_regex and raid_card1_disk_info_regex:
+                                        raid_card1_disk_info = raid_card1_disk_info_regex.group(1)
+                                        raid_card1_disk_sn_list = re.findall(r"Serial Number\s*:\s*[^\n\r]+", raid_card1_disk_info)
+                                        raid_card1_disk_sn = [line.split(":")[1].lstrip().rstrip() for line in raid_card1_disk_sn_list]
+                                        raid_card1_disk_vendor_list = re.findall(r"Manufacturer\s*:\s*[^\n\r]+", raid_card1_disk_info)
+                                        raid_card1_disk_vendor = [line.split(":")[1].lstrip().rstrip() for line in raid_card1_disk_vendor_list]
+                                        raid_card1_disk_model_list = re.findall(r"Model\s*:\s*[^\n\r]+", raid_card1_disk_info)
+                                        raid_card1_disk_model = [line.split()[-1].lstrip().rstrip() for line in raid_card1_disk_model_list]
+                                        raid_card1_disk_interface_list = re.findall(r"Interface Type\s*:\s*[^\n\r]+", raid_card1_disk_info)
+                                        raid_card1_disk_interface = [line.split(":")[1].lstrip().rstrip() for line in raid_card1_disk_interface_list]
+                                        raid_card1_disk_capacity_list = re.findall(r"Capacity\s*:\s*[^\n\r]+", raid_card1_disk_info)
+                                        raid_card1_disk_capacity = [line.split(":")[1].lstrip().rstrip() for line in raid_card1_disk_capacity_list]
+                                        raid_card1_disk_fw_list = re.findall(r"Firmware Version\s*:\s*[^\n\r]+", raid_card1_disk_info)
+                                        raid_card1_disk_fw = [line.split(":")[1].lstrip().rstrip() for line in raid_card1_disk_fw_list]
+                                        raid_card1_disk_count = len(re.findall(r"^ID\s*:\s*[^\n\r]+", raid_card1_disk_info, re.MULTILINE))
+                                    else:
+                                        raid_card1_disk_sn = "raid card1 disk info not found in server_config.txt"
+                                        raid_card1_disk_vendor = "raid card1 disk info not found in server_config.txt"
+                                        raid_card1_disk_model = "raid card1 disk info not found in server_config.txt"
+                                        raid_card1_disk_interface = "raid card1 disk info not found in server_config.txt"
+                                        raid_card1_disk_capacity = "raid card1 disk info not found in server_config.txt"
+                                        raid_card1_disk_fw = "raid card1 disk info not found in server_config.txt"
+                                        raid_card1_disk_count = "raid card1 disk info not found in server_config.txt"
                                 else:
                                     raid_card1_disk_sn = "raid card1 disk info not found in server_config.txt"
                                     raid_card1_disk_vendor = "raid card1 disk info not found in server_config.txt"
@@ -660,6 +670,7 @@ def main():
                                 else:
                                     raid_card2_model = "raid card2 info1 not found in server_config.txt"
 
+                                raid_card2_info2 = None
                                 raid_card2_info2_regex = re.search(r"(RAID Controller #1 Information.*)(?=\n\s*\nPass Through Drives Information)", server_config_txt_content, re.DOTALL)
                                 if raid_card2_info2_regex:
                                     raid_card2_info2 = raid_card2_info2_regex.group(1)
@@ -671,7 +682,6 @@ def main():
                                     raid_card2_nvdata = raid_card2_nvdata_regex.group(1).lstrip() if raid_card2_nvdata_regex else "raid card2 nvdata version not found in server_config.txt"
                                     raid_card2_jbod_regex = re.search(r"^JBOD Enabled\s*:\s*([^\n\r]+)", raid_card2_info2, re.MULTILINE)
                                     raid_card2_jbod = raid_card2_jbod_regex.group(1).lstrip() if raid_card2_jbod_regex else "raid card2 jbod status not found in server_config.txt"
-
                                 else:
                                     raid_card2_cache = "raid card2 info2 not found in server_config.txt"
                                     raid_card2_fw = "raid card2 info2 not found in server_config.txt"
@@ -679,23 +689,33 @@ def main():
                                     raid_card2_jbod = "raid card2 info2 not found in server_config.txt"
 
                                 # RAID Card2 Disk 정보 추출
-                                raid_card2_disk_info_regex = re.search(r"(Physical Drives Information.*)", raid_card2_info2, re.DOTALL)
-                                if raid_card2_info2_regex and raid_card2_disk_info_regex:
-                                    raid_card2_disk_info = raid_card2_disk_info_regex.group(1)
-                                    raid_card2_disk_sn_list = re.findall(r"Serial Number\s*:\s*[^\n\r]+", raid_card2_disk_info)
-                                    raid_card2_disk_sn = [line.split(":")[1].lstrip().rstrip() for line in raid_card2_disk_sn_list]
-                                    raid_card2_disk_vendor_list = re.findall(r"Manufacturer\s*:\s*[^\n\r]+", raid_card2_disk_info)
-                                    raid_card2_disk_vendor = [line.split(":")[1].lstrip().rstrip() for line in raid_card2_disk_vendor_list]
-                                    raid_card2_disk_model_list = re.findall(r"Model\s*:\s*[^\n\r]+", raid_card2_disk_info)
-                                    raid_card2_disk_model = [line.split()[-1].lstrip().rstrip() for line in raid_card2_disk_model_list]
-                                    raid_card2_disk_interface_list = re.findall(r"Interface Type\s*:\s*[^\n\r]+", raid_card2_disk_info)
-                                    raid_card2_disk_interface = [line.split(":")[1].lstrip().rstrip() for line in raid_card2_disk_interface_list]
-                                    raid_card2_disk_capacity_list = re.findall(r"Capacity\s*:\s*[^\n\r]+", raid_card2_disk_info)
-                                    raid_card2_disk_capacity = [line.split(":")[1].lstrip().rstrip() for line in raid_card2_disk_capacity_list]
-                                    raid_card2_disk_fw_list = re.findall(r"Firmware Version\s*:\s*[^\n\r]+", raid_card2_disk_info)
-                                    raid_card2_disk_fw = [line.split(":")[1].lstrip().rstrip() for line in raid_card2_disk_fw_list]
-                                    raid_card2_disk_simplified_fw_list = list(set(raid_card2_disk_fw))
-                                    raid_card2_disk_count = len(re.findall(r"^ID\s*:\s*[^\n\r]+", raid_card2_disk_info, re.MULTILINE))
+                                if raid_card2_info2:
+                                    raid_card2_disk_info_regex = re.search(r"(Physical Drives Information.*)", raid_card2_info2, re.DOTALL)
+                                    if raid_card2_info2_regex and raid_card2_disk_info_regex:
+                                        raid_card2_disk_info = raid_card2_disk_info_regex.group(1)
+                                        raid_card2_disk_sn_list = re.findall(r"Serial Number\s*:\s*[^\n\r]+", raid_card2_disk_info)
+                                        raid_card2_disk_sn = [line.split(":")[1].lstrip().rstrip() for line in raid_card2_disk_sn_list]
+                                        raid_card2_disk_vendor_list = re.findall(r"Manufacturer\s*:\s*[^\n\r]+", raid_card2_disk_info)
+                                        raid_card2_disk_vendor = [line.split(":")[1].lstrip().rstrip() for line in raid_card2_disk_vendor_list]
+                                        raid_card2_disk_model_list = re.findall(r"Model\s*:\s*[^\n\r]+", raid_card2_disk_info)
+                                        raid_card2_disk_model = [line.split()[-1].lstrip().rstrip() for line in raid_card2_disk_model_list]
+                                        raid_card2_disk_interface_list = re.findall(r"Interface Type\s*:\s*[^\n\r]+", raid_card2_disk_info)
+                                        raid_card2_disk_interface = [line.split(":")[1].lstrip().rstrip() for line in raid_card2_disk_interface_list]
+                                        raid_card2_disk_capacity_list = re.findall(r"Capacity\s*:\s*[^\n\r]+", raid_card2_disk_info)
+                                        raid_card2_disk_capacity = [line.split(":")[1].lstrip().rstrip() for line in raid_card2_disk_capacity_list]
+                                        raid_card2_disk_fw_list = re.findall(r"Firmware Version\s*:\s*[^\n\r]+", raid_card2_disk_info)
+                                        raid_card2_disk_fw = [line.split(":")[1].lstrip().rstrip() for line in raid_card2_disk_fw_list]
+                                        raid_card2_disk_simplified_fw_list = list(set(raid_card2_disk_fw))
+                                        raid_card2_disk_count = len(re.findall(r"^ID\s*:\s*[^\n\r]+", raid_card2_disk_info, re.MULTILINE))
+                                    else:
+                                        raid_card2_disk_sn = "raid card2 disk info not found in server_config.txt"
+                                        raid_card2_disk_vendor = "raid card2 disk info not found in server_config.txt"
+                                        raid_card2_disk_model = "raid card2 disk info not found in server_config.txt"
+                                        raid_card2_disk_interface = "raid card2 disk info not found in server_config.txt"
+                                        raid_card2_disk_capacity = "raid card2 disk info not found in server_config.txt"
+                                        raid_card2_disk_fw = "raid card2 disk info not found in server_config.txt"
+                                        raid_card2_disk_simplified_fw_list = "raid card2 disk info not found in server_config.txt"
+                                        raid_card2_disk_count = "raid card2 disk info not found in server_config.txt"
                                 else:
                                     raid_card2_disk_sn = "raid card2 disk info not found in server_config.txt"
                                     raid_card2_disk_vendor = "raid card2 disk info not found in server_config.txt"
@@ -703,6 +723,7 @@ def main():
                                     raid_card2_disk_interface = "raid card2 disk info not found in server_config.txt"
                                     raid_card2_disk_capacity = "raid card2 disk info not found in server_config.txt"
                                     raid_card2_disk_fw = "raid card2 disk info not found in server_config.txt"
+                                    raid_card2_disk_simplified_fw_list = "raid card2 disk info not found in server_config.txt"
                                     raid_card2_disk_count = "raid card2 disk info not found in server_config.txt"
 
                                 # GPU 정보 추출
@@ -816,8 +837,8 @@ def main():
                                     ocp2_sn = "ocp info1 not found in server_config.txt"
                         # server_config.txt 파일 자체를 찾지 못한 경우
                         else:
-                            ocp1_sn = "no server_config.txt file"
-                            ocp2_sn = "no server_config.txt file"
+                            ocp1_sn = "ocp info1 no server_config.txt file"
+                            ocp2_sn = "ocp info1 no server_config.txt file"
 
                         netcard_info_tarinfo = tar.getmember("dump_info/LogDump/netcard/netcard_info.txt")
                         if netcard_info_tarinfo.isfile():
@@ -901,19 +922,19 @@ def main():
 
                         # BIOS 설정 정보 지정
                         #1258H V7 (AMD)
-                        if pn == "1258HV7":
+                        if pn == "1258H V7":
                             bios_config_dict = bios_config_dict_1258h_v7
                         #2288H V7 L4 (GPU)
-                        elif pn == "2288HV7" and gpu_count > 0:
+                        elif pn == "2288H V7" and gpu_count > 0:
                             bios_config_dict = bios_config_dict_k1_k2_k3_k4_sa_2288h_v7_l4
                         #K5
                         elif cpu_model[0] == "Xeon(R) Gold 6430" and cpu_model[1] == "Xeon(R) Gold 6430":
                             bios_config_dict = bios_config_dict_k5
                         #SB
-                        elif pn == "2288HV7" and gpu_count == 0:
+                        elif pn == "2288H V7" and gpu_count == 0:
                             bios_config_dict = bios_config_dict_sb_sc
                         #SC
-                        elif pn == "5288V7":
+                        elif pn == "5288 V7":
                             bios_config_dict = bios_config_dict_sb_sc
                         #K1, K2, K3, K4, SA
                         else:
@@ -1056,7 +1077,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-# SB, SC PciePortEnable9 값 구분
-# AMD 서버같인 레이드 카드 없는 경우에 대한 분기
-# 공백으로 출력되는 문제 에러메세지가 출력되로고 수정
