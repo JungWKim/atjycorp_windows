@@ -13,7 +13,7 @@ EMAIL       = "kakao_support"    # 로그인 이메일
 PASSWORD    = "Support1111@"     # 로그인 비밀번호
 GROUP_ID    = 300426718           # 대상 그룹 ID
 RESPONSIBLE = "채진윤"            # RMA담당자 이름
-OUTPUT_FILE = r"C:\Users\채진윤\Desktop\RMA요청.xlsx"
+OUTPUT_FILE = r"C:\Users\lionm\Downloads\RMA요청.xlsx"
 
 # ───────────────────────────────────────────────────────
 # 센터 매핑
